@@ -1,82 +1,42 @@
-Esta API sirve para administrar una agenda de contactos, esta hecha con
-Node.js y Express mostrados en clase.
+Este proyecto consiste en una API para gestionar contactos, realizada con Node.js y Express. Permite registrar usuarios, iniciar sesión y manejar contactos, además de tener diferentes permisos según el rol de cada usuario.
 
-Descargas:
-Node.js
-Express
-express-validator
-express-rate-limit
-Helmet
-CORS
-Morgan
+¿Qué puede hacer?
 
-Requisitos
-Node.js instalado
-npm instalado
-Postman para probar los endpoints
+Registrar usuarios e iniciar sesión.
 
-Instalar:
-Clonar el repositorio y entrar a la carpeta
+Proteger las rutas usando JWT.
 
-La API esta disponible en Postman:
-GET
+Guardar las contraseñas de forma segura con bcryptjs.
 
-/contacts
+Crear, consultar, editar y eliminar contactos.
 
-Lista todos los contactos
+Organizar los contactos por categorías y marcarlos como favoritos.
 
-GET
+Consultar estadísticas de los contactos.
 
-/contacts/:id
+Administrar los usuarios y cambiar sus roles.
 
-Obtiene un contacto por ID
+Validar los datos y limitar los intentos de inicio de sesión.
 
-POST
+Instalación
 
-/contacts
+Primero, instala las dependencias:
 
-Crea un contacto
+npm install
 
-PUT
+Después, crea un archivo .env basándote en .env.example y configura las variables necesarias.
 
-/contacts/:id
+Para iniciar el servidor en modo desarrollo, ejecuta:
 
-Reemplaza un contacto
+npm run dev
 
-PATCH
+La API estará disponible en http://localhost:3000.
 
-/contacts/:id/favorite
+Pruebas
 
-Alterna el estado de favorito
+Utilicé Postman para probar las rutas y comprobar que las funciones principales trabajaran correctamente, incluyendo el inicio de sesión, la gestión de contactos y los permisos de los usuarios.
 
-DELETE
+Nota
 
-/contacts/:id
+Los usuarios y los contactos se guardan en memoria, por lo que los datos se pierden cuando se reinicia el servidor.
 
-Elimina un contacto
-
-GET
-
-/contacts/stats/summary
-
-Obtiene estadísticas de la agenda
-
-Headers: 
-
-Para consultar las estadisticas
-x-client-id : postman-test
-
-Para eliminar un contacto:
-x-api-key: talendig-123
-
-Validators:
-1. El nombre debe tener entre 2 y 50 caracteres
-2. El telefono 7 y 20 caracteres y con algunos caracteres permitidos como son +
-3.El correo es opcional, pero debe ser valido si se proporciona
-4.Las categorías permitidas son family, friends, work y other
-5. no se permiten telefonos dobles o sea duplicados
-6.Los errores se gestionan por middleware centralizado y se responden en formato JSON
-7.Se utiliza limitación de solicitudes para cuidar las rutas contactos
-
-Middleware:
-La aplicación utiliza Helmet, CORS, Morgan, express.json(), requestTimer, requireClientId, validateApiKey, notFound, errorHandler y un limitador de solicitudes con Express Rate Limit.
