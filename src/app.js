@@ -5,6 +5,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const contactsRoutes = require('./routes/contacts.routes');
+const authRoutes = require('./routes/auth.routes');
+const adminRoutes = require('./routes/admin.routes');
 const requestTimer = require('./middlewares/requestTimer');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
@@ -22,8 +24,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/contacts', contactsRoutes);
+app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 console.log('Rutas /contacts cargadas');
-
 // Estos dos middlewares deben ir al final
 app.use(notFound);
 app.use(errorHandler);

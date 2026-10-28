@@ -1,0 +1,17 @@
+
+const jwt = require('jsonwebtoken');
+
+function signToken(user) {
+  return jwt.sign(
+    {
+      sub: user.id,
+      role: user.role,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN || '1h',
+    }
+  );
+}
+
+module.exports = { signToken };

@@ -3,58 +3,43 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 
 const router = express.Router();
-
 const controller = require('../controllers/contacts.controller');
 
 const {
   validateContact,
   validatePutContact,
   validateId,
-  checkValidation
+  checkValidation,
 } = require('../validators/contacts.validators');
 
+const verifyToken = require('../middlewares/verifyToken');
+const checkRole = require('../middlewares/checkRole');
 const requireClientId = require('../middlewares/requireClientId');
-const validateApiKey = require('../middlewares/validateApiKey');
 const AppError = require('../utils/AppError');
 
 const contactsLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   limit: 50,
   message: {
-    error: 'Demasiadas solicitudes. Intenta de nuevo más tarde.'
+    error: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
   },
   handler: (req, res, next, options) => {
     next(new AppError(options.message.error, 429));
-  }
+  },
 });
 
+// Todas las rutas de contactos requieren un JWT válido.
+router.use(verifyToken);
 router.use(contactsLimiter);
 
-// Estadísticas: debe estar antes de /:id
-router.get(
-  '/stats/summary',
-  requireClientId,
-  controller.getContactStats
-);
+// Las estadísticas requieren x-client-id.
+router.get('/stats/summary', requireClientId, controller.getContactStats);
 
-// Consultar todos los contactos
 router.get('/', controller.getAllContacts);
 
-// Consultar un contacto por ID
-router.get(
-  '/:id',
-  validateId,
-  checkValidation,
-  controller.getContactById
-);
+router.get('/:id', validateId, checkValidation, controller.getContactById);
 
-// Crear un contacto
-router.post(
-  '/',
-  validateContact,
-  checkValidation,
-  controller.createContact
-);
+router.post('/', validateContact, checkValidation, controller.createContact);
 
 router.put(
   '/:id',
@@ -64,7 +49,6 @@ router.put(
   controller.updateContact
 );
 
-// Cambiar el estado de favorito
 router.patch(
   '/:id/favorite',
   validateId,
@@ -72,12 +56,12 @@ router.patch(
   controller.toggleFavorite
 );
 
-// Eliminar un contacto: requiere API key
+// Solo managers y administradores pueden eliminar.
 router.delete(
   '/:id',
+  checkRole('manager', 'admin'),
   validateId,
   checkValidation,
-  validateApiKey,
   controller.deleteContact
 );
 
